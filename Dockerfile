@@ -1,8 +1,8 @@
 FROM leafney/ubuntu-mysql
 
-ENV DEBIAN_FRONTEND="noninteractive" \
-    APACHE_DOCUMENT_ROOT="/var/www/html/ilias/" \
-    MYSQL_ROOT_PWD="mysql"
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV APACHE_DOCUMENT_ROOT="/var/www/html/ilias/"
+ENV MYSQL_ROOT_PWD="mysql"
 
 RUN apt-get update \
     && apt-get install -y apache2 php7.0 wget less htop git php7.0-fpm curl \
