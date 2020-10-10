@@ -13,12 +13,14 @@ RUN cd /var/www/html \
     && cd ilias \
     && git checkout release_5-4 \
     && chown www-data:www-data /var/www/html/ilias -R \
-    && sed -i 's!/var/www/html!/var/www/html/ilias/!g' /etc/apache2/sites-enabled/000-default.conf
+    && sed -i 's!/var/www/html!/var/www/html/ilias/!g' /etc/apache2/sites-enabled/000-default.conf \
+    && mkdir /var/www/html/data \
+    && chmod www-data:www-data /var/www/html/data
 
-RUN echo "sql_mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
+RUN echo "sql_mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREqATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
 
 RUN service mysql start $ sleep 10 \
-    && mysql -u root -pmysql -e "CREATE DATABASE ilias CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE USER 'ilias'@'localhost' IDENTIFIED BY 'password'; GRANT LOCK TABLES on *.* TO 'ilias@localhost'; GRANT ALL PRIVILEGES ON ilias.* TO 'ilias'@'localhost'; FLUSH PRIVILEGES;"
+    && mysql -u root -proot -e "CREATE DATABASE ilias CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE USER 'ilias'@'localhost' IDENTIFIED BY 'password'; GRANT LOCK TABLES on *.* TO 'ilias'@'localhost'; GRANT ALL PRIVILEGES ON ilias.* TO 'ilias'@'localhost'; FLUSH PRIVILEGES;"
 
 RUN apt-get install -y zip unzip imagemagick openjdk-8-jdk phantomjs
 
