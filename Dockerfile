@@ -2,13 +2,11 @@ FROM leafney/ubuntu-mysql
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     APACHE_DOCUMENT_ROOT="/var/www/html/ilias/" \
-    MYSQL_ROOT_PWD="root"
+    MYSQL_ROOT_PWD="mysql"
 
 RUN apt-get update \
     && apt-get install -y apache2 php7.0 wget less htop git php7.0-fpm curl \
-    && apt-get install -y libapache2-mod-php7.0 php7.0-gd php7.0-mysql php7.0-mbstring php-xml
-
-RUN apt-get install -y nodejs
+    && apt-get install -y libapache2-mod-php7.0 php7.0-gd php7.0-mysql php7.0-mbstring php-xml nodejs
 
 RUN cd /var/www/html \
     && git clone https://github.com/ILIAS-eLearning/ILIAS.git ilias \
@@ -22,8 +20,8 @@ RUN echo "sql_mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_
 RUN service mysql start $ sleep 10 \
     && mysql -u root -p${MYSQL_ROOT_PWD} -e "CREATE DATABASE ilias CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE USER 'ilias'@'localhost' IDENTIFIED BY 'password'; GRANT LOCK TABLES on *.* TO 'ilias@localhost'; GRANT ALL PRIVILEGES ON ilias.* TO 'ilias'@'localhost'; FLUSH PRIVILEGES;"
 
-RUN apt install -y zip unzip imagemagick openjdk-8-jdk phantomjs
+RUN apt-get install -y zip unzip imagemagick openjdk-8-jdk phantomjs
 
-CMD [“/usr/sbin/apache2”,” -D”,” FOREGROUND”]
+RUN sed -i 's!sleep 5!sleep 5; /usr/sbin/apachectl -D FOREGROUND \&!g' /root/startup.sh
 
 EXPOSE 80
